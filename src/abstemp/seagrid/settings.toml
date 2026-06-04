@@ -1,0 +1,188 @@
+
+[default]
+latmin =  -90
+latmax =   90
+lonmin = -180
+lonmax =  180
+projmap = "glob"
+timescales = ["daily", "8days", "monthly"]
+verbose = false
+basedatadir = "/home/bror/.seagrid/"
+file_filter = "%Y%m%d"
+
+[oc_cci]
+dtm_min = "1998-01-01"
+dtm_max = "2020-12-31"
+thredds_host = "https://www.oceancolour.org"
+thredds_path = "/thredds/dodsC/cci/v{version}-release/geographic/{timetype}/{data_var}/{year}/"
+data_vars = []
+resolutions = ["1km", "4km"]
+timescales = ["daily", "monthly"]
+version = "6.0"
+datadir = "@format {this.basedatadir}/OC_CCI"
+
+[oc-cci-local]
+dtm_min = "1998-01-01"
+dtm_max = "2022-12-31"
+THREDDS_HOST = "https://www.oceancolour.org"
+data_vars = []
+resolutions = ["4km"]
+timescales = ["daily","monthly"]
+datadir = "/data/slow/OC-CCI/oceancolour.org/occci-v6.0/geographic/netcdf/{timetype}/all_products/{year}/"
+version = "6.0"
+
+[modis_a]
+dtm_min = "2023-01-01"
+dtm_max = "2023-12-31"
+data_vars = ["chlor_a", "kd_490", "par", "ipar", "sst"]
+resolutions = ["4km", "9km"]
+timescales = ["daily", "monthly"]
+datadir = "@format {this.basedatadir}/MODIS"
+
+[viirs]
+dtm_min = "2023-01-01"
+dtm_max = "2023-12-31"
+data_vars = ["chlor_a", "kd_490", "par", "ipar", "sst"]
+resolutions = ["4km", "9km"]
+timescales = ["daily", "monthly"]
+datadir = "@format {this.basedatadir}/viirs"
+
+
+[seawifs]
+dtm_min = "1998-01-01"
+dtm_max = "2010-12-31"
+data_vars = ["chlor_a", "kd_490", "par", "ipar", "sst"]
+resolutions = ["9km"]
+timescales = ["daily", "monthly"]
+datadir = "@format {this.basedatadir}/seawifs"
+
+
+[ostia]
+dataset_id = "METOFFICE-GLO-SST-L4-REP-OBS-SST"
+dtm_min  = "1998-01-01"
+dtm_max  = "2020-12-31"
+dtm_freq = "1D"
+data_vars = ["sst",]
+datadir = "src/abstemp/data/ostia"
+filestamp = "{dtm}120000-UKMO-L4_GHRSST-SSTfnd-OSTIA-GLOB_REP-v02.0-fv02.0.nc"
+timescales = ["daily", "monthly"]
+doi = "10.48670/moi-00168"
+
+[smoc]
+dataset_id = "cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"
+dtm_min  = "2022-06-01"
+dtm_max  = "2025-12-31"
+dtm_freq = "1H"
+USERNAME = "bjonsson1"
+PASSWORD = "cogrun-mytwe7-jagvAw"
+data_vars = ["sst",]
+datadir = "@format {this.basedatadir}/CMEMS/SMOC"
+filestamp = "SMOC_{dtm}_R{dtm}.nc"
+timescales = ["hourly", "daily"]
+doi = "doi.org/10.48670/moi-00016"
+
+
+[ostia-nrt]
+#dataset_id = "METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2"
+dataset_id = "SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001"
+method = "copernicus-cli"
+dtm_min  = "2008-01-01"
+dtm_max  = "2024-12-31"
+dtm_freq = "1D"
+data_vars = ["sst",]
+datadir = "src/abstemp/data/ostia/nrt"
+filestamp = "{dtm}120000-UKMO-L4_GHRSST-SSTfnd-OSTIA-GLOB-v02.0-fv02.0.nc"
+timescales = ["daily", "monthly"]
+
+[globcolour]
+dataset_id = "cmems_obs-oc_glo_bgc-plankton_nrt_l3-olci-300m_P1D"
+method = "copernicus-cli"
+dtm_min  = "1998-01-01"
+dtm_max  = "2020-12-31"
+dtm_freq = "1D"
+username = "bjonsson1"
+password = "netSof-vacfad-2nixfa"
+data_vars = ["sst",]
+datadir = "@format {this.basedatadir}/GHRSST/OSTIA"
+filestamp = "CMEMS_ostia"
+timescales = ["daily", "monthly"]
+
+[cmems-globgc]
+dataset_id = "cmems_mod_glo_bgc_my_0.25_P1D-m"
+grid_id = "cmems_mod_glo_bgc_my_0.25_static"
+file_filter = "%Y%m%d"
+method = "copernicus-cli"
+dtm_min  = "1993-01-01"
+dtm_max  = "2022-12-31"
+dtm_freq = "1D"
+username = "bjonsson1"
+password = "netSof-vacfad-2nixfa"
+data_vars = ["no3", "po4"]
+datadir = "@format {this.basedatadir}/cmems/globgc"
+filestamp = "mercatorfreebiorys2v4_global_mean_{dtm}.nc"
+timescales = ["daily", "monthly"]
+doi = "10.48670/moi-00019"
+
+[cmems-globgc-monthly]
+dataset_id = "cmems_mod_glo_bgc_my_0.25_P1M-m"
+grid_id = "cmems_mod_glo_bgc_my_0.25_static"
+file_filter = "%Y%m"
+timescales = ["monthly",]
+dtm_freq = "MS"
+method = "copernicus-cli"
+dtm_min  = "1993-01-01"
+dtm_max  = "2022-12-31"
+username = "bjonsson1"
+password = "netSof-vacfad-2nixfa"
+data_vars = ["no3", "po4"]
+datadir = "@format {this.basedatadir}/cmems/globgc/monthly"
+filestamp = "mercatorfreebiorys2v4_global_mean_{dtm}.nc"
+doi = "10.48670/moi-00019"
+
+[acspo]
+dtm_min  = "2000-02-24"
+dtm_max  = "2099-12-31"
+dtm_freq = "1D"
+data_vars = ["sst",]
+timescales = ["daily",]
+datadir = "@format {this.basedatadir}/GHRSST/ACSPO"
+protocol = "http"
+host = "https://coastwatch.noaa.gov"
+remotedir = "/pub/socd2/coastwatch/sst/ran/l3s/leo/daily/{year}/{day_of_year:03}"
+filename = "{year}{month:02}{day:02}120000-STAR-L3S_GHRSST-SSTsubskin-LEO_Daily-ACSPO_V2.81-v02.0-fv01.0.nc"
+ref-url = "https://coastwatch.noaa.gov/cwn/products/acspo-global-002o-gridded-super-collated-sst-and-thermal-fronts-low-earth-orbiting.html"
+ref-doi = "10.1117/12.2620103"
+
+[acspo-nrt]
+dtm_min  = "2012-02-01"
+dtm_max  = "2099-12-31"
+dtm_freq = "1D"
+data_vars = ["sst",]
+timescales = ["daily",]
+datadir = "@format {this.basedatadir}/GHRSST/ACSPO"
+protocol = "http"
+host = "https://coastwatch.noaa.gov"
+remotedir = "/pub/socd2/coastwatch/sst/nrt/l3s/leo/daily/{year}/{day_of_year:03}"
+filename = "{year}{month:02}{day:02}120000-STAR-L3S_GHRSST-SSTsubskin-LEO_Daily-ACSPO_V2.81-v02.0-fv01.0.nc"
+ref-url = "https://coastwatch.noaa.gov/cwn/products/acspo-global-002o-gridded-super-collated-sst-and-thermal-fronts-low-earth-orbiting.html"
+ref-doi = "10.1117/12.2620103"
+
+
+[tiho-psd]
+dtm_min = "1998-01-01"
+dtm_max = "2020-12-31"
+dtm_freq = "MS"
+HTTP_HOST = "https://download.pangaea.de"
+datadir = "@format {this.basedatadir}/BICEP/PSD"
+
+
+[longhurst]
+version = "2007"
+HTTP_HOST = "https://download.pangaea.de"
+datadir = "@format {this.basedatadir}/longhurst"
+DATA_URL = "https://rsg.pml.ac.uk/shared_files/brj/"
+
+[cafe]
+version = "2020"
+HTTP_HOST = "https://download.pangaea.de"
+datadir = "@format {this.basedatadir}/pp/cafe"

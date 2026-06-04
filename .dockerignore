@@ -1,0 +1,14 @@
+# Large data files — mounted at run time, not baked into the image
+src/abstemp/data/*.nc
+src/abstemp/data/cmip6/
+
+# Outputs
+figs/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+
+# Dev artefacts
+.git/
+*.egg-info/
+.pixi/
