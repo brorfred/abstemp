@@ -37,4 +37,4 @@ ENV MPLBACKEND=Agg
 # Disable Python output buffering so progress is visible in container logs
 ENV PYTHONUNBUFFERED=1
 
-ENTRYPOINT ["pixi", "run", "python", "docker/run_figures.py"]
+#ENTRYPOINT ["pixi", "run", "python", "docker/run_figures.py"]

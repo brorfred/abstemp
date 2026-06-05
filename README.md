@@ -39,21 +39,8 @@ Mount the data directory (read-only) and an output directory for the figures:
 
 ```bash
 podman run --rm \
-  -v "$(pwd)/src/abstemp/data:/app/src/abstemp/data:ro" \
+  -v "$(pwd)/src/abstemp/data:/app/src/abstemp/data" \
   -v "$(pwd)/figs:/app/figs" \
-  abstemp
-```
-
-On the first run, [cartopy](https://scitools.org.uk/cartopy) downloads ~2 MB
-of Natural Earth shapefiles.  Mount a named volume to cache them across runs:
-
-```bash
-podman volume create cartopy_cache
-
-podman run --rm \
-  -v "$(pwd)/src/abstemp/data:/app/src/abstemp/data:ro" \
-  -v "$(pwd)/figs:/app/figs" \
-  -v cartopy_cache:/root/.local/share/cartopy \
   abstemp
 ```
 
@@ -84,35 +71,28 @@ PyPI and conda-forge; no extra repositories need to be cloned.
 
 ## Use case 1 — Bundled data
 
-Most analysis files are tracked in git.  After cloning, only three large SST
+Most analysis files are tracked in git.  After cloning, only four large SST
 NetCDF files need to be downloaded before all figures can be reproduced.
 
 ### Files included in git
 
 | File | Size | Description |
 |------|------|-------------|
-| `src/abstemp/data/mintmat_2001-2009.nc` | ~1 GB | Dijkstra travel-time matrix + per-region SST/Longhurst stats |
-| `src/abstemp/data/abstemp_reg_degvel.parquet` | small | Per-region degree-velocity for 1985, 2019, 2095 |
-| `src/abstemp/data/all_cmip6_hists_ssp585.csv` | small | CMIP6 SSP5-8.5 area-weighted SST histograms |
-| `src/abstemp/data/all_cmip6_hists_ssp245.csv` | small | CMIP6 SSP2-4.5 area-weighted SST histograms |
-| `src/abstemp/data/all_ostia_hists.csv` | small | OSTIA area-weighted SST histograms |
-| `src/abstemp/data/growth_rates.csv` | small | Observed phytoplankton growth rates vs temperature |
+| `src/abstemp/data/abstemp_reg_degvel.parquet` | Per-region degree-velocity for 1985, 2019, 2095 |
+| `src/abstemp/data/all_cmip6_hists_ssp585.csv` | CMIP6 SSP5-8.5 area-weighted SST histograms |
+| `src/abstemp/data/all_cmip6_hists_ssp245.csv` | CMIP6 SSP2-4.5 area-weighted SST histograms |
+| `src/abstemp/data/all_ostia_hists.csv` | OSTIA area-weighted SST histograms |
+| `src/abstemp/data/growth_rates.csv` | Observed phytoplankton growth rates vs temperature |
 
 ### Files to download after clone
 
 ```python
-from abstemp.data import download
+from abstemp import data 
 
-download.maxmonsst_fields()   # ecearth_sst_2095-2100.nc, ostia_sst_1985-1990.nc, ostia_sst_2019-2023.nc
-download.longhurst_regions()  # Longhurst_Regions_2007.nc (needed only for add_longhurst)
+data.setup()
 ```
+Downloads  mintmat_2001-2009.nc, ecearth_sst_2095-2100.nc, ostia_sst_1985-1990.nc, ostia_sst_2019-2023.nc, and Longhurst_Regions_2007.nc
 
-The `mintmat_2001-2009.nc` connectivity file is tracked in git; if it is
-missing (e.g. in a shallow clone), fetch it from Zenodo:
-
-```python
-download.mintmat()
-```
 
 ### Reproduce all figures
 
@@ -124,17 +104,10 @@ figs.global_histograms()    # SST histogram comparison → figs/sst_hist_1985_20
 figs.growth_model_plot()    # growth-model curves → figs/growth_models.pdf
 figs.checkerboard()         # 2°×2° grid diagnostic → figs/checkerboard.pdf
 figs.sst_maps()             # max/min/range SST maps → figs/ostia_sst.pdf
+figs.tempvel_maps()        # → figs/regdegvel_maps.pdf
+figs.tempvel_histogram()     # → figs/regdegvel_hist.pdf
 ```
 
-Temperature-velocity figures:
-
-```python
-from abstemp.figure_scripts.temp_velocities import tempvel_maps, tempvel_histogram
-import abstemp
-df = abstemp.read_regdegvel()
-tempvel_maps(df)        # → figs/regdegvel_maps.pdf
-tempvel_histogram()     # → figs/regdegvel_hist.pdf
-```
 
 #### Figure–data dependency table
 
@@ -143,7 +116,6 @@ tempvel_histogram()     # → figs/regdegvel_hist.pdf
 | `warmest_month_maps()` | `ostia_sst_1985-1990.nc`, `ostia_sst_2019-2023.nc`, `ecearth_sst_2095-2100.nc` | No — download |
 | `global_histograms()` | `all_cmip6_hists_ssp585.csv`, `all_cmip6_hists_ssp245.csv`, `all_ostia_hists.csv` | Yes |
 | `growth_model_plot()` | none | — |
-| `growth_observations()` | `growth_rates.csv` | Yes |
 | `checkerboard()` | none | — |
 | `sst_maps()` | `mintmat_2001-2009.nc` | Yes |
 | `tempvel_maps()` / `tempvel_histogram()` | `abstemp_reg_degvel.parquet` | Yes |
