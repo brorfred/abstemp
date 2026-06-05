@@ -91,7 +91,7 @@ from abstemp import data
 
 data.setup()
 ```
-Downloads  mintmat_2001-2009.nc, ecearth_sst_2095-2100.nc, ostia_sst_1985-1990.nc, ostia_sst_2019-2023.nc, and Longhurst_Regions_2007.nc
+Downloads `mintmat_2001-2009.nc`, `ecearth_maxmonsst_2095-2100.nc`, `ostia_maxmonsst_1985-1990.nc`, `ostia_maxmonsst_2019-2023.nc`, and `Longhurst_Regions_2007.nc`.
 
 
 ### Reproduce all figures
@@ -113,7 +113,7 @@ figs.tempvel_histogram()     # → figs/regdegvel_hist.pdf
 
 | Figure function | Files required | In git? |
 |----------------|---------------|---------|
-| `warmest_month_maps()` | `ostia_sst_1985-1990.nc`, `ostia_sst_2019-2023.nc`, `ecearth_sst_2095-2100.nc` | No — download |
+| `warmest_month_maps()` | `ostia_maxmonsst_1985-1990.nc`, `ostia_maxmonsst_2019-2023.nc`, `ecearth_maxmonsst_2095-2100.nc` | No — download |
 | `global_histograms()` | `all_cmip6_hists_ssp585.csv`, `all_cmip6_hists_ssp245.csv`, `all_ostia_hists.csv` | Yes |
 | `growth_model_plot()` | none | — |
 | `checkerboard()` | none | — |
@@ -145,18 +145,24 @@ cmip6.retrieve_all_files()   # needs ~/.cdsapirc; saves to src/abstemp/data/cmip
 This downloads monthly SST for 2090–2100 for all 24 models listed in
 `cmip6.cmip6_sst_models` under both `ssp2_4_5` and `ssp5_8_5`.
 
-#### 2. Download pre-computed SST NetCDF files
+#### 2. Download or regenerate OSTIA max-month SST files
+
+Download the pre-computed files from the project server:
 
 ```python
 from abstemp.data import download
-download.maxmonsst_fields()   # ecearth_sst_2095-2100.nc, ostia_sst_1985-1990.nc, ostia_sst_2019-2023.nc
+download.maxmonsst_fields()   # ecearth_maxmonsst_2095-2100.nc, ostia_maxmonsst_1985-1990.nc, ostia_maxmonsst_2019-2023.nc
 ```
 
-To generate the OSTIA files directly from the archive instead:
+To regenerate the OSTIA max-month files directly from the raw archive instead:
 
 ```python
 from abstemp.warmest_month import save_ostia_files
-save_ostia_files()   # requires OSTIA access; saves ostia_sst_1985-1990.nc and ostia_sst_2019-2023.nc
+from abstemp.data import generate_maxmonsst_files
+
+save_ostia_files()          # requires OSTIA access; saves ostia_sst_1985-1990.nc and ostia_sst_2019-2023.nc
+generate_maxmonsst_files()  # computes ostia_maxmonsst_1985-1990.nc, ostia_maxmonsst_2019-2023.nc, ecearth_maxmonsst_2095-2100.nc
+                            # (also requires ecearth_sst_2095-2100.nc from download.maxmonsst_fields())
 ```
 
 #### 3. Generate SST histogram CSVs
@@ -178,7 +184,7 @@ province assignments needed for this step.
 from abstemp.tempvel import generate_regdegvel_df
 import abstemp, pathlib
 
-df = generate_regdegvel_df()   # requires OSTIA (1985, 2019) and CMIP6 (2095) access
+df = generate_regdegvel_df()   # requires ostia_maxmonsst_*.nc (step 2) and CMIP6 (2095) access
 datadir = pathlib.Path(abstemp.__file__).parent / "data"
 df.to_parquet(datadir / "abstemp_reg_degvel.parquet")
 ```
@@ -224,8 +230,8 @@ src/abstemp/
 ├── mapview.py               Interactive Plotly map of SST statistics
 │
 ├── data/                    Bundled datasets + download utilities
-│   ├── __init__.py          open_warmest_*, open_longhurst, all()
-│   └── download.py          mintmat(), maxmonsst_fields(), longhurst_regions()
+│   ├── __init__.py          open_warmest_*, open_ostia_*, open_longhurst, max_min_month, generate_maxmonsst_files, all()
+│   └── download.py          mintmat(), maxmonsst_fields(), ostia_sst_fields(), longhurst_regions()
 │
 ├── seagrid/                 Grid download/normalisation
 │   ├── ostia.py             OSTIA SST download and access (Copernicus Marine)

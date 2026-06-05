@@ -16,9 +16,9 @@ MODEL = "ec_earth3_cc"
 def max_month():
     """Find the per-year maximum monthly SST and the month it occurs.
 
-    For each year in 2001–2008, iterates over monthly OSTIA SST fields and
-    records the highest SST value and the corresponding month at every grid
-    cell.
+    For each year in the EC-Earth3-CC dataset, iterates over monthly SST
+    fields and records the highest SST value and the corresponding month at
+    every grid cell.
 
     Returns
     -------
@@ -47,9 +47,9 @@ def max_month():
 def min_month():
     """Find the per-year minimum monthly SST and the month it occurs.
 
-    For each year in 2001–2008, iterates over monthly OSTIA SST fields and
-    records the lowest SST value and the corresponding month at every grid
-    cell.
+    For each year in the EC-Earth3-CC dataset, iterates over monthly SST
+    fields and records the lowest SST value and the corresponding month at
+    every grid cell.
 
     Returns
     -------
@@ -80,9 +80,9 @@ def min_month():
 def clim_max_month():
     """Compute the climatological maximum monthly SST and the warmest month.
 
-    Averages OSTIA SST over 2001–2008 for each calendar month, then takes the
-    maximum across months at every grid cell to produce a climatological peak
-    SST and the corresponding month index.
+    Averages EC-Earth3-CC SST for each calendar month across all available
+    years, then takes the maximum across months at every grid cell to produce
+    a climatological peak SST and the corresponding month index.
 
     Returns
     -------
@@ -146,18 +146,21 @@ def nearest(ds, return_dist=False):
 
 
 def to_reg(ds, ij=None):
-    """Average OSTIA full-resolution SST values into mintmat regions.
+    """Average CMIP6 SST values into mintmat regions.
 
-    Maps each OSTIA pixel to the nearest mintmat region centroid and computes
-    the mean SST within each region.
+    Maps each model grid pixel to the nearest mintmat region centroid and
+    computes the mean SST within each region.  Accepts both a full monthly
+    dataset (``sst`` + ``time``) and a pre-computed max-month dataset
+    (``maxarr``, no ``time`` dimension).
 
     Parameters
     ----------
-    arr : numpy.ndarray
-        2-D array of shape (3600, 7200) with SST values (°C) on the full
-        OSTIA 0.05° grid.
+    ds : xarray.Dataset
+        Either a monthly dataset with a ``sst`` variable and ``time``
+        dimension, or a pre-computed statistics dataset with a ``maxarr``
+        variable (as returned by :func:`abstemp.data.max_min_month`).
     ij : numpy.ndarray, optional
-        Precomputed region indices from :func:`nearest_ostia`.  Computed
+        Precomputed region indices from :func:`nearest`.  Computed
         on-the-fly if not provided.
 
     Returns
@@ -168,7 +171,7 @@ def to_reg(ds, ij=None):
         Region 0 is set to NaN.
     """
     ij = nearest(ds) if ij is None else ij
-    arr = ds.sst.max(dim="time").values
+    arr = ds.maxarr.values if "maxarr" in ds else ds.sst.max(dim="time").values
     df = pd.DataFrame({"ij":np.squeeze(ij+1), "sst":arr.flatten()})
     svec = df.groupby("ij").mean().reset_index()
     svec = pd.concat([pd.DataFrame({"ij":0, "sst":[np.nan]}),svec], axis=0)

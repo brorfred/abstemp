@@ -106,22 +106,44 @@ def mintmat(
 
 
 def maxmonsst_fields() -> None:
-    """Download all three pre-computed warmest-month SST NetCDF files from the project server.
+    """Download all pre-computed warmest-month SST NetCDF files from the project server.
 
     Downloads:
 
-    - ``ecearth_sst_2095-2100.nc`` — EC-Earth3-CC SSP5-8.5 2095–2100
-    - ``ostia_sst_1985-1990.nc``   — OSTIA reanalysis 1985–1990
-    - ``ostia_sst_2019-2023.nc``   — OSTIA NRT 2019–2023
+    - ``ecearth_maxmonsst_2095-2100.nc`` — EC-Earth3-CC SSP5-8.5 max-month stats 2095–2100
+    - ``ostia_maxmonsst_1985-1990.nc``   — OSTIA reanalysis max-month stats 1985–1990
+    - ``ostia_maxmonsst_2019-2023.nc``   — OSTIA NRT max-month stats 2019–2023
 
     Returns
     -------
     None
     """
     http_retrieve(
-        url=f"http://{REPO_IP}/abstemp/ecearth_sst_2095-2100.nc",
-        filename="ecearth_sst_2095-2100.nc",
+        url=f"http://{REPO_IP}/abstemp/ecearth_maxmonsst_2095-2100.nc",
+        filename="ecearth_maxmonsst_2095-2100.nc",
     )
+    http_retrieve(
+        url=f"http://{REPO_IP}/abstemp/ostia_maxmonsst_1985-1990.nc",
+        filename="ostia_maxmonsst_1985-1990.nc",
+    )
+    http_retrieve(
+        url=f"http://{REPO_IP}/abstemp/ostia_maxmonsst_2019-2023.nc",
+        filename="ostia_maxmonsst_2019-2023.nc",
+    )
+
+def ostia_sst_fields() -> None:
+    """Download the raw monthly OSTIA SST NetCDF files from the project server.
+
+    Only needed to regenerate the max-month statistics via
+    :func:`abstemp.data.generate_maxmonsst_files`.  Downloads:
+
+    - ``ostia_sst_1985-1990.nc`` — OSTIA reanalysis monthly SST 1985–1990
+    - ``ostia_sst_2019-2023.nc`` — OSTIA NRT monthly SST 2019–2023
+
+    Returns
+    -------
+    None
+    """
     http_retrieve(
         url=f"http://{REPO_IP}/abstemp/ostia_sst_1985-1990.nc",
         filename="ostia_sst_1985-1990.nc",

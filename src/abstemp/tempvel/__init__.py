@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import abstemp
+from abstemp import data as abstemp_data
 from abstemp.seagrid import cmip6
 from abstemp.reg_calculations import sst_cmip6, sst_ostia
 
@@ -91,8 +92,7 @@ def regvel_2095(df: "pd.DataFrame | None" = None) -> pd.DataFrame:
         ``2095_regdegfrm``.
     """
     df = abstemp.read_regdegvel() if df is None else df
-    ds = cmip6.center_on_gmt(cmip6.open_dataset("ec_earth3_cc"))
-    sstreg = sst_cmip6.to_reg(ds)
+    sstreg = sst_cmip6.to_reg(abstemp_data.open_warmest_2095())
     df["2095_max_sst"] = sstreg["sst"]
     regdegvel,regdegbas,regdegfrm = movedegree(1, df["2095_max_sst"])
     df["2095_regdegvel"] = regdegvel
@@ -117,7 +117,7 @@ def regvel_1985(df: "pd.DataFrame | None" = None) -> pd.DataFrame:
         ``1985_regdegfrm``.
     """
     df = abstemp.read_regdegvel() if df is None else df
-    sstreg = sst_ostia.calc_reg_maxmon(1985, 1990)
+    sstreg = sst_ostia.to_reg(abstemp_data.open_warmest_1985().maxarr.values)
     df["1985_max_sst"] = sstreg.sst
     regdegvel,regdegbas,regdegfrm = movedegree(1, df["1985_max_sst"])
     df["1985_regdegvel"] = regdegvel
@@ -142,7 +142,7 @@ def regvel_2019(df: "pd.DataFrame | None" = None) -> pd.DataFrame:
         ``2019_regdegfrm``.
     """
     df = abstemp.read_regdegvel() if df is None else df
-    sstreg = sst_ostia.calc_reg_maxmon(2019, 2023)
+    sstreg = sst_ostia.to_reg(abstemp_data.open_warmest_2019().maxarr.values)
     df["2019_max_sst"] = sstreg.sst
     regdegvel,regdegbas,regdegfrm = movedegree(1, df["2019_max_sst"])
     df["2019_regdegvel"] = regdegvel

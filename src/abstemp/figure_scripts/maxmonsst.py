@@ -57,9 +57,9 @@ def warmest_map(ds=None, mp=None, ax=None, colorbar=True, title="2019$-$2023"):
     """
 
 
-    ds = ds or warmest_month.open_dataset("2019-01-01", "2023-12-31", "sst", nrt=True)
-    da = ds.sst.max(dim="time")
-    #da = da.where(da!=0)
+    if ds is None:
+        ds = data.open_warmest_2019()
+    da = ds.maxarr if "maxarr" in ds else ds.sst.max(dim="time")
     cat = np.zeros(da.shape)
     levels = [25, 30, 31, 32, 33, 34, 35, 36, 37]
     for lev in levels:
@@ -122,8 +122,9 @@ def warmest_map_pcolor(ds=None, mp=None, ax=None, colorbar=True, title="2019$-$2
     --------
     warmest_map : Equivalent function using ``contourf``.
     """
-    ds = ds or warmest_month.open_dataset("2019-01-01", "2023-12-31", "sst", nrt=True)
-    da = ds.sst.max(dim="time")
+    if ds is None:
+        ds = data.open_warmest_2019()
+    da = ds.maxarr if "maxarr" in ds else ds.sst.max(dim="time")
     cat = np.zeros(da.shape)
     levels = [25, 30, 31, 32, 33, 34, 35, 36, 37]
     for lev in levels:
