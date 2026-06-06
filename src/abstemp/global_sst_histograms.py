@@ -2,12 +2,12 @@ from pathlib import Path
 
 import numpy as np
 import xarray as xr
-import matplotlib.pyplot as plt
 import pandas as pd
 
 
 from abstemp import warmest_month, read_ostia_hists, read_cmip6_hists
 from abstemp.seagrid import cmip6
+from abstemp.data import open_ostia_1985, open_ostia_2019
 
 sstvec = np.arange(-4,40,0.25)
 
@@ -33,7 +33,7 @@ def process(ds: xr.Dataset) -> tuple[np.ndarray, np.ndarray]:
     area = warmest_month.haversine_area(ds)
     y,x = np.histogram(sst[mask], sstvec, weights=area[mask])
     y[y==0] = np.nan
-    return x,y #x[:-1], y
+    return x, y
 
 
 def cesm2() -> tuple[np.ndarray, np.ndarray]:
@@ -51,7 +51,7 @@ def cesm2() -> tuple[np.ndarray, np.ndarray]:
 
 
 def ostia85() -> tuple[np.ndarray, np.ndarray]:
-    """Return warmest-month SST histogram from OSTIA reanalysis 1985–1989.
+    """Return warmest-month SST histogram from OSTIA reanalysis 1985–1990.
 
     Returns
     -------
@@ -60,7 +60,7 @@ def ostia85() -> tuple[np.ndarray, np.ndarray]:
     y : numpy.ndarray
         Area-weighted bin counts (km²).
     """
-    ds = warmest_month.open_dataset(f"1985-01-01", f"1989-12-31")
+    ds = open_ostia_1985()
     return process(ds)
 
 def ostia19() -> tuple[np.ndarray, np.ndarray]:
@@ -73,7 +73,7 @@ def ostia19() -> tuple[np.ndarray, np.ndarray]:
     y : numpy.ndarray
         Area-weighted bin counts (km²).
     """
-    ds = warmest_month.open_dataset("2019-01-01", "2023-12-31", "sst", nrt=True)
+    ds = open_ostia_2019()
     return process(ds)
 
 def all_cmip(experiment: str = "ssp5_8_5") -> pd.DataFrame:
@@ -127,8 +127,8 @@ def save_ostia_hists() -> pd.DataFrame:
         DataFrame indexed by SST bin centre (°C) with columns
         ``"1985-1990"`` and ``"2019-2023"``.
     """
-    sst,area85 = ostia85()
-    sst,area19 = ostia19()
+    sst,area85 = process(open_ostia_1985())
+    sst,area19 = process(open_ostia_2019())
     df = pd.DataFrame({"1985-1990":area85, "2019-2023":area19}).set_index(sst[:-1])
     df.index.name = "SST"
     datadir = Path(__file__).parent / "data"
@@ -153,13 +153,10 @@ def significant_round(x: float | np.ndarray, n_figs: int) -> float | np.ndarray:
     """
     power = 10 ** np.floor(np.log10(np.abs(x).clip(1e-200)))
     return np.round(x / power, n_figs - 1) * power
-    #return rounded
 
 
 def stats_table():
 
-    cmp = read_cmip6_hists()
-    cmp = cmp.fillna(0).cumsum()/cmp.fillna(0).sum(axis=0)
     c24 = read_cmip6_hists(experiment="ssp245")
     c24 = c24.fillna(0).cumsum()/c24.fillna(0).sum(axis=0)
     c58 = read_cmip6_hists(experiment="ssp585")
@@ -170,6 +167,6 @@ def stats_table():
     df = ost.copy()
     df["2095-2100 ssp245"] = c24.mean(axis=1)
     df["2095-2100 ssp585"] = c58.mean(axis=1)
-    tab = (1-df.loc[[25,30,31,32,34,35]]).transpose()
-    tab.rename(columns={25:"25°C", 30:"30°C", 31:"31°C", 32:"32°C", 34:"34°C", 35:"35°C"}, inplace=True)
-    return tab
+    tab = (1-df.loc[[24.75, 29.75, 30.75, 31.75, 33.75, 34.75]]).transpose()
+    tab.rename(columns={24.75:">=25°C", 29.75:">=30°C", 30.75:">=31°C", 31.75:">=32°C", 33.75:">=34°C", 34.75:">=35°C"}, inplace=True)
+    return significant_round(tab*100, 2).map(lambda x: f"{x:.2g}")

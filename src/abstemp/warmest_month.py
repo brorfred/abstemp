@@ -125,27 +125,27 @@ def area(ds: xr.Dataset) -> np.ndarray:
     return gridtools.area(lats=lats, lons=lons)
 
 def warmest_monthly_sst(ds: xr.Dataset, data_var: str = "sst") -> np.ndarray:
-    """Return the SST value at the climatologically warmest month for each pixel.
+    """Return the climatological mean SST at the warmest month for each pixel.
+
+    Computes a 12-month climatology via :func:`monthly_climatology` and
+    returns the maximum across months at each grid cell.
 
     Parameters
     ----------
     ds : xarray.Dataset
-        Dataset with a ``time`` dimension and an ``sst`` variable.
+        Dataset with a ``time`` dimension and an ``sst`` variable spanning
+        at least one full year.
     data_var : str, optional
         SST variable name.  Default is ``"sst"``.
 
     Returns
     -------
     numpy.ndarray
-        2-D array (lat × lon) of SST (°C) at the warmest month for each
-        pixel.  Ocean-free cells are NaN.
+        2-D array (lat × lon) of climatological mean SST (°C) at the
+        warmest calendar month for each pixel.  Ocean-free cells are NaN.
     """
-    mm = max_month(ds)
-    sst = np.full(ds[data_var].shape[1:],np.nan)
-    for mn in range(1,13):
-        mask = mm==mn
-        sst[mask] = ds[data_var][mn-1].data[mask]
-    return sst
+    cl = monthly_climatology(ds, data_var=data_var)
+    return cl[data_var].max(dim="month").values
 
 
 def haversine_area(ds: xr.Dataset) -> np.ndarray:
