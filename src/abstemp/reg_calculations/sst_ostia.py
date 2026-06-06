@@ -37,8 +37,8 @@ def mean_month():
 def max_month(year1=2001, year2=2009):
     """Find the per-year maximum monthly SST and the month it occurs.
 
-    For each year in the range `year1` to `year2` (inclusive), iterates over
-    monthly OSTIA SST fields and records the highest SST value and the
+    For each year in ``range(year1, year2)`` (``year2`` exclusive), iterates
+    over monthly OSTIA SST fields and records the highest SST value and the
     corresponding month at every grid cell.
 
     Returns
@@ -71,7 +71,7 @@ def min_month():
     """Find the per-year minimum monthly SST and the month it occurs.
 
     For each year in 2001–2008, iterates over monthly OSTIA SST fields and
-    records the highest SST value and the corresponding month at every grid
+    records the lowest SST value and the corresponding month at every grid
     cell.
 
     Returns
@@ -182,7 +182,6 @@ def nearest_ostia(return_dist=False):
         ``return_dist=True``).
     """
     gl = abstemp.open_mintmat_ds()
-    lons,lats = np.meshgrid(gl.reglon,gl.reglat)
     latlon = np.deg2rad(np.array([gl.reglat,gl.reglon]).T)
     tree = BallTree(latlon[1:,:], metric="haversine")
 

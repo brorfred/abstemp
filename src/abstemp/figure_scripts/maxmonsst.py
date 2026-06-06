@@ -87,7 +87,7 @@ def warmest_map(ds=None, mp=None, ax=None, colorbar=True, title="2019$-$2023"):
     mp.nice(borders=False, ax=ax)
     mp.text(150, 60, title, **title_kws)
 
-def warmest_map_pcolor(ds=None, mp=None, ax=None, colorbar=True, title="2019$-$2023"):
+def warmest_map_pcolor(ds=None, mp=None, ax=None, colorbar=True, clim=False, title="2019$-$2023"):
     """
     Plot a categorical map of the maximum monthly SST using pcolor.
 
@@ -124,7 +124,10 @@ def warmest_map_pcolor(ds=None, mp=None, ax=None, colorbar=True, title="2019$-$2
     """
     if ds is None:
         ds = data.open_warmest_2019()
-    da = ds.maxarr if "maxarr" in ds else ds.sst.max(dim="time")
+    if clim:
+        da = ds.clim_maxarr if "clim_maxarr" in ds else ds.sst.max(dim="time")
+    else:
+        da = ds.maxarr if "maxarr" in ds else ds.sst.max(dim="time")
     cat = np.zeros(da.shape)
     levels = [25, 30, 31, 32, 33, 34, 35, 36, 37]
     for lev in levels:
@@ -187,7 +190,7 @@ def all_model_maps() -> None:
 
     Iterates over all models listed in :data:`abstemp.seagrid.cmip6.cmip6_sst_models`
     and both ``ssp5_8_5`` and ``ssp2_4_5`` experiments.  Each map is saved as
-    a 600 dpi PNG under ``figs/model_maps/<experiment>/figs_<model>_<experiment>.png``.
+    a 600 dpi PNG under ``figs/model_maps/max/<experiment>/figs_<model>_<experiment>.png``.
     Output subdirectories are created automatically.
 
     Returns
@@ -196,14 +199,19 @@ def all_model_maps() -> None:
     """
     datadir = Path("figs/model_maps")
     datadir.mkdir(exist_ok=True)
-    (datadir / "ssp5_8_5").mkdir(exist_ok=True)
-    (datadir / "ssp2_4_5").mkdir(exist_ok=True)
+    (datadir / "clm" / "ssp5_8_5").mkdir(exist_ok=True, parents=True)
+    (datadir / "clm" / "ssp2_4_5").mkdir(exist_ok=True, parents=True)
+    (datadir / "max" / "ssp5_8_5").mkdir(exist_ok=True, parents=True)
+    (datadir / "max" / "ssp2_4_5").mkdir(exist_ok=True, parents=True)
+
 
     plt.clf()
     for model in cmip6.cmip6_sst_models:
         for experiment in ["ssp5_8_5", "ssp2_4_5"]:
-            ds = cmip6.open_dataset(model=model, experiment=experiment)
+            ds = data.open_warmest_2095(model=model, experiment=experiment)
             warmest_map_pcolor(ds, title=f"{model} ({experiment})")
-            plt.savefig(datadir / experiment / f"figs_{model}_{experiment}.png", dpi=600, bbox_inches="tight")
+            plt.savefig(datadir / "max" / experiment / f"figs_{model}_{experiment}.png", dpi=600, bbox_inches="tight")
+            warmest_map_pcolor(ds, title=f"{model} ({experiment})", clim=True)
+            plt.savefig(datadir / "clm" / experiment / f"figs_{model}_{experiment}.png", dpi=600, bbox_inches="tight")
             plt.close("all")
             print(model, experiment)

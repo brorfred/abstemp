@@ -139,9 +139,6 @@ def save_ostia_hists() -> pd.DataFrame:
 def significant_round(x: float | np.ndarray, n_figs: int) -> float | np.ndarray:
     """Round *x* to *n_figs* significant figures.
 
-    .. warning::
-        This function shadows the built-in :func:`round`.  See ISSUES.md S1.
-
     Parameters
     ----------
     x : float or array_like

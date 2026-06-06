@@ -38,7 +38,7 @@ tempvel.regdegvel_hist(df)
 | `movedegree(degree, sst)` | Core algorithm: return vel/bas/frm arrays for given SST |
 | `regvel_1985(df)` | Add 1985–1990 columns to *df* |
 | `regvel_2019(df)` | Add 2019–2023 columns to *df* |
-| `regvel_2095(df)` | Add 2095–2100 columns (EC-Earth3-CC SSP5-8.5) to *df* |
+| `regvel_2095(df)` | Add 2095–2100 columns (CNRM-CM6-1-HR SSP5-8.5 by default) to *df* |
 | `regdegvel_hist(df)` | Area-weighted histogram of travel time (years) |
 
 ## Output columns (per time period `{year}`)

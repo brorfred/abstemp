@@ -119,16 +119,22 @@ def maxmonsst_fields() -> None:
     None
     """
     http_retrieve(
-        url=f"http://{REPO_IP}/abstemp/ecearth_maxmonsst_2095-2100.nc",
-        filename="ecearth_maxmonsst_2095-2100.nc",
-    )
-    http_retrieve(
         url=f"http://{REPO_IP}/abstemp/ostia_maxmonsst_1985-1990.nc",
         filename="ostia_maxmonsst_1985-1990.nc",
     )
     http_retrieve(
         url=f"http://{REPO_IP}/abstemp/ostia_maxmonsst_2019-2023.nc",
         filename="ostia_maxmonsst_2019-2023.nc",
+    )
+    datadir = pathlib.Path(__file__).parent / "maxmonsst_cmip6"
+    datadir.mkdir(exist_ok=True, parents=True)
+    http_retrieve(
+        url=f"http://{REPO_IP}/abstemp/cnrm_cm6_1_hr_ssp5_8_5_maxmonsst.nc",
+        filename=str(datadir / "cnrm_cm6_1_hr_ssp5_8_5_maxmonsst.nc"),
+    )
+    http_retrieve(
+        url=f"http://{REPO_IP}/abstemp/cnrm_cm6_1_hr_ssp2_4_5_maxmonsst.nc",
+        filename=str(datadir / "cnrm_cm6_1_hr_ssp2_4_5_maxmonsst.nc"),
     )
 
 def ostia_sst_fields() -> None:

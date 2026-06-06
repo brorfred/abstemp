@@ -54,6 +54,6 @@ Available `data_var` keys: `uvel`, `vvel`, `wvel`, `temp`, `salt`.
 
 ## Notes
 
-- `seagrid` has no `__init__.py` (implicit namespace package).  See ISSUES.md S4.
+- `seagrid` has no `__init__.py` (implicit namespace package).  See ISSUES.md S1.
 - `_mercator.py` is an incomplete stub with missing imports and should not be
   used.  See ISSUES.md O1.

@@ -52,8 +52,6 @@ def open_dataset(
         ds = ds.assign_coords({"time":dtm})
         dalist.append(ds[data_var])
     return xr.concat(dalist, dim="time").to_dataset()
-    #return dalist
-    #ds = open_dataset(f"{year}-01-01", f"{year}-12-31", data_var)
 
 
 def monthly_climatology(ds: xr.Dataset, data_var: str = "sst") -> xr.Dataset:
@@ -105,7 +103,6 @@ def max_month(ds: xr.Dataset, data_var: str = "sst") -> np.ndarray:
     """
     cl = monthly_climatology(ds, data_var=data_var)
     return np.argmax(cl[data_var].data, axis=0) + 1
-    #mmds = xr.Dataset({"month":(("lat","lon"), mm1)}, coords={"lat":ds.lat,"lon":ds.lon})
 
 def area(ds: xr.Dataset) -> np.ndarray:
     """Compute grid-cell area (km²) for each pixel in a dataset.
@@ -144,7 +141,6 @@ def warmest_monthly_sst(ds: xr.Dataset, data_var: str = "sst") -> np.ndarray:
         pixel.  Ocean-free cells are NaN.
     """
     mm = max_month(ds)
-    #ds = open_dataset(f"{year}-01-01", f"{year}-12-31", data_var)
     sst = np.full(ds[data_var].shape[1:],np.nan)
     for mn in range(1,13):
         mask = mm==mn

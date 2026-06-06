@@ -91,7 +91,7 @@ from abstemp import data
 
 data.setup()
 ```
-Downloads `mintmat_2001-2009.nc`, `ecearth_maxmonsst_2095-2100.nc`, `ostia_maxmonsst_1985-1990.nc`, `ostia_maxmonsst_2019-2023.nc`, and `Longhurst_Regions_2007.nc`.
+Downloads `mintmat_2001-2009.nc`, `ostia_maxmonsst_1985-1990.nc`, `ostia_maxmonsst_2019-2023.nc`, CNRM-CM6-1-HR max-month files (SSP5-8.5 and SSP2-4.5) into `maxmonsst_cmip6/`, and `Longhurst_Regions_2007.nc`.
 
 
 ### Reproduce all figures
@@ -113,7 +113,7 @@ figs.tempvel_histogram()     # → figs/regdegvel_hist.pdf
 
 | Figure function | Files required | In git? |
 |----------------|---------------|---------|
-| `warmest_month_maps()` | `ostia_maxmonsst_1985-1990.nc`, `ostia_maxmonsst_2019-2023.nc`, `ecearth_maxmonsst_2095-2100.nc` | No — download |
+| `warmest_month_maps()` | `ostia_maxmonsst_1985-1990.nc`, `ostia_maxmonsst_2019-2023.nc`, `maxmonsst_cmip6/cnrm_cm6_1_hr_ssp5_8_5_maxmonsst.nc` | No — download |
 | `global_histograms()` | `all_cmip6_hists_ssp585.csv`, `all_cmip6_hists_ssp245.csv`, `all_ostia_hists.csv` | Yes |
 | `growth_model_plot()` | none | — |
 | `checkerboard()` | none | — |

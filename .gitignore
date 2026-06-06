@@ -80,9 +80,17 @@ slask
 .pixi
 *.egg-info
 
-rf_models/old/
+
 src/abstemp/data/Longhurst_Regions_2007.nc
 src/abstemp/data/cmip6/
 src/abstemp/data/ecearth_sst_2095-2100.nc
 src/abstemp/data/ostia_sst_1985-1990.nc
 src/abstemp/data/ostia_sst_2019-2023.nc
+src/abstemp/data/cmip6
+src/abstemp/data/maxmonsst_cmip6/
+src/abstemp/data/mintmat_2001-2009.nc
+src/abstemp/data/ostia_maxmonsst_1985-1990.nc
+src/abstemp/data/ostia_maxmonsst_2019-2023.nc
+figs/model_maps/
+
+figs/warmest_sst_map.pdf
