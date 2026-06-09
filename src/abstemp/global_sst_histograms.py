@@ -11,7 +11,7 @@ from abstemp.data import open_ostia_1985, open_ostia_2019
 
 sstvec = np.arange(-4,40,0.25)
 
-def process(ds: xr.Dataset) -> tuple[np.ndarray, np.ndarray]:
+def process(ds: xr.Dataset, clim=False: bool) -> tuple[np.ndarray, np.ndarray]:
     """Compute an area-weighted histogram of the warmest monthly SST.
 
     Parameters
@@ -28,11 +28,16 @@ def process(ds: xr.Dataset) -> tuple[np.ndarray, np.ndarray]:
         Area-weighted bin counts (km²), shape ``(n_bins,)``.
         Bins with zero area are set to NaN.
     """
-    sst = warmest_month.warmest_monthly_sst(ds)
-    mask = np.isfinite(sst)
+    if clim:
+        sst = ds.sst
+    else:
+        sst = warmest_month.warmest_monthly_sst(ds)
+    mask = np.isfinite(sst).values
     area = warmest_month.haversine_area(ds)
-    y,x = np.histogram(sst[mask], sstvec, weights=area[mask])
+    area_3d = np.broadcast_to(area, sst.shape)
+    y,x = np.histogram(sst.values[mask], sstvec, weights=area_3d[mask])
     y[y==0] = np.nan
+    y = y / sst.shape[0]
     return x, y
 
 

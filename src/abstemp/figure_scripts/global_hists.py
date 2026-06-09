@@ -29,19 +29,22 @@ def main_histograms(include_c24: bool = False) -> None:
     c24 = read_cmip6_hists(experiment="ssp245")
     ost = read_ostia_hists()
 
+    def ynorm(vec):
+        return vec
+
     plt.clf()
-    plt.stairs(ost["1985-1990"], sstvec, lw=1, color="tab:purple", label="OSTIA 1985-90", baseline=None)
-    plt.stairs(ost["2019-2023"], sstvec, lw=1, color="tab:blue", label="OSTIA 2019-23", baseline=None)
+    plt.stairs(ynorm(ost["1985-1990"]), sstvec, lw=1, color="tab:purple", label="OSTIA 1985-90", baseline=None)
+    plt.stairs(ynorm(ost["2019-2023"]), sstvec, lw=1, color="tab:blue", label="OSTIA 2019-23", baseline=None)
     for model in c58.keys():
-        plt.stairs(c58[model], sstvec, lw=0.5, alpha=0.1, color="tab:red")
+        plt.stairs(ynorm(c58[model]), sstvec, lw=0.5, alpha=0.1, color="tab:red")
     #for y in yarr: plt.stairs(y, x, color="0.5", alpha=0.5, lw=0.5)
-    plt.stairs(np.nanmean(c58, axis=1), sstvec, lw=1, color="tab:red", label="CMIP6 2095-2100")
+    plt.stairs(ynorm(np.nanmean(ynorm(c58), axis=1)), sstvec, lw=1, color="tab:red", label="CMIP6 2095-2100")
     if include_c24:
-        plt.stairs(np.nanmean(c24, axis=1), sstvec, lw=1, color="tab:orange", label="CMIP6 2095-2100 ssp245")
+        plt.stairs(ynorm(np.nanmean(ynorm(c24), axis=1)), sstvec, lw=1, color="tab:orange", label="CMIP6 2095-2100 ssp245")
     plt.legend()
 
     plt.xlim(-2,40)
-    plt.ylim(-0.1e7, 2e7)
+    plt.ylim(-0.1e7, 1e7)
     plt.ylabel("Area (km$^2$)")
     plt.xlabel("Max monthly SST (°C)")
 
