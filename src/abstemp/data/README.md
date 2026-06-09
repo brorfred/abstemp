@@ -19,7 +19,7 @@ Bundled datasets and download utilities for the **abstemp** analysis.
 | `growth_rates_binned_1_deg.csv` | Same data binned at 1 °C resolution. |
 | `cmip6/` | Per-model CMIP6 NetCDF files downloaded via `download.retrieve_all_cmip6_files()`. |
 
-Raw monthly SST files (`ostia_sst_1985-1990.nc`, `ostia_sst_2019-2023.nc`) are only needed to regenerate the maxmonsst files; see `generate_maxmonsst_files()`.
+Raw monthly SST files (`ostia_sst_1985-1990.nc`, `ostia_sst_2019-2023.nc`) are only needed to regenerate the maxmonsst files; see `generate_ostia_maxmonsst_files()` and `generate_cmip6_maxmonsst_files()`.
 
 ## Public API
 

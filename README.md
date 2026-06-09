@@ -158,11 +158,12 @@ To regenerate the OSTIA max-month files directly from the raw archive instead:
 
 ```python
 from abstemp.warmest_month import save_ostia_files
-from abstemp.data import generate_maxmonsst_files
+from abstemp.data import generate_ostia_maxmonsst_files, generate_cmip6_maxmonsst_files
 
-save_ostia_files()          # requires OSTIA access; saves ostia_sst_1985-1990.nc and ostia_sst_2019-2023.nc
-generate_maxmonsst_files()  # computes ostia_maxmonsst_1985-1990.nc, ostia_maxmonsst_2019-2023.nc, ecearth_maxmonsst_2095-2100.nc
-                            # (also requires ecearth_sst_2095-2100.nc from download.maxmonsst_fields())
+save_ostia_files()                   # requires OSTIA access; saves ostia_sst_1985-1990.nc and ostia_sst_2019-2023.nc
+generate_ostia_maxmonsst_files()     # computes ostia_maxmonsst_1985-1990.nc, ostia_maxmonsst_2019-2023.nc
+generate_cmip6_maxmonsst_files()     # computes maxmonsst_cmip6/{model}_{experiment}_maxmonsst.nc for all CMIP6 models
+                                     # (requires CMIP6 NetCDF files from step 1)
 ```
 
 #### 3. Generate SST histogram CSVs

@@ -11,7 +11,7 @@ from abstemp.data import open_ostia_1985, open_ostia_2019
 
 sstvec = np.arange(-4,40,0.25)
 
-def process(ds: xr.Dataset, clim=False: bool) -> tuple[np.ndarray, np.ndarray]:
+def process(ds: xr.Dataset, clim: bool = False) -> tuple[np.ndarray, np.ndarray]:
     """Compute an area-weighted histogram of the warmest monthly SST.
 
     Parameters
@@ -19,6 +19,12 @@ def process(ds: xr.Dataset, clim=False: bool) -> tuple[np.ndarray, np.ndarray]:
     ds : xarray.Dataset
         Dataset with an ``sst`` variable and spatial dimensions
         ``lat`` / ``lon``.
+    clim : bool, optional
+        If True, histogram all monthly SST values in ``ds.sst`` (shape
+        ``(time, lat, lon)``) and normalise counts by the number of time
+        steps.  If False (default), compute the climatological warmest-month
+        SST via :func:`abstemp.warmest_month.warmest_monthly_sst` and
+        histogram the resulting 2-D field.
 
     Returns
     -------
@@ -29,15 +35,16 @@ def process(ds: xr.Dataset, clim=False: bool) -> tuple[np.ndarray, np.ndarray]:
         Bins with zero area are set to NaN.
     """
     if clim:
-        sst = ds.sst
+        sst = ds.sst.values  # (time, lat, lon)
     else:
-        sst = warmest_month.warmest_monthly_sst(ds)
-    mask = np.isfinite(sst).values
+        sst = warmest_month.warmest_monthly_sst(ds)  # (lat, lon)
+    mask = np.isfinite(sst)
     area = warmest_month.haversine_area(ds)
     area_3d = np.broadcast_to(area, sst.shape)
-    y,x = np.histogram(sst.values[mask], sstvec, weights=area_3d[mask])
+    y, x = np.histogram(sst[mask], sstvec, weights=area_3d[mask])
     y[y==0] = np.nan
-    y = y / sst.shape[0]
+    if clim:
+        y = y / sst.shape[0]
     return x, y
 
 

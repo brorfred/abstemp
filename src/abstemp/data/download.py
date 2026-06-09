@@ -110,9 +110,10 @@ def maxmonsst_fields() -> None:
 
     Downloads:
 
-    - ``ecearth_maxmonsst_2095-2100.nc`` — EC-Earth3-CC SSP5-8.5 max-month stats 2095–2100
-    - ``ostia_maxmonsst_1985-1990.nc``   — OSTIA reanalysis max-month stats 1985–1990
-    - ``ostia_maxmonsst_2019-2023.nc``   — OSTIA NRT max-month stats 2019–2023
+    - ``ostia_maxmonsst_1985-1990.nc`` — OSTIA reanalysis max-month stats 1985–1990
+    - ``ostia_maxmonsst_2019-2023.nc`` — OSTIA NRT max-month stats 2019–2023
+    - ``maxmonsst_cmip6/cnrm_cm6_1_hr_ssp5_8_5_maxmonsst.nc`` — CNRM-CM6-1-HR SSP5-8.5 max-month stats 2095–2100
+    - ``maxmonsst_cmip6/cnrm_cm6_1_hr_ssp2_4_5_maxmonsst.nc`` — CNRM-CM6-1-HR SSP2-4.5 max-month stats 2095–2100
 
     Returns
     -------

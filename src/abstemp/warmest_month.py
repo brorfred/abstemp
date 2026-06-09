@@ -193,7 +193,7 @@ def save_ostia_files() -> None:
     loading monthly OSTIA fields via :func:`open_dataset`.  Requires access
     to the OSTIA archive through njord.
 
-    For the EC-Earth3-CC 2095–2100 file use
+    For CMIP6 2095–2100 files use
     :func:`abstemp.data.download.maxmonsst_fields` instead.
 
     Returns
