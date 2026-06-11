@@ -12,7 +12,7 @@ regions derived from the ECCO particle-tracking model:
 |--------|---------|
 | 1985–1990 | OSTIA reanalysis |
 | 2019–2023 | OSTIA NRT product |
-| 2095–2100 | EC-Earth3-CC SSP5-8.5 |
+| 2095–2100 | CNRM-CM6-1-HR SSP5-8.5 |
 
 ---
 
@@ -260,13 +260,3 @@ src/abstemp/
     ├── methods.py           Methods diagnostic figures (checkerboard, SST maps)
     └── temp_velocities.py   Temperature-velocity maps and histogram
 ```
-
----
-
-## Known issues
-
-See [ISSUES.md](ISSUES.md) for the full list.  Items still open that affect
-the use cases above:
-
-- Dead code blocks in `sst_ostia.calc_reg_maxmon()` and `regrid()` (D2, D3)
-- Bare IP address in `download.maxmonsst_fields()` (S6 — now in `REPO_IP` constant)
